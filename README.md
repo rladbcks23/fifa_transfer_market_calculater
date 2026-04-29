@@ -15,9 +15,3 @@
 그러고 결과화면에서는 피파대낙 사이트 쫙 보여주고 연결해주는거지
 
 난 괜찮은거 같은데?
-
-
-
-git add . 
-git commit -m 'commit massage'
-git push origin
