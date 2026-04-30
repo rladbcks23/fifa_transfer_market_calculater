@@ -6,7 +6,7 @@ from rapidfuzz import process, fuzz
 
 reader = easyocr.Reader(['ko', 'en'])
 
-PATH = 'sample_img/img4.png'
+PATH = 'sample_img/img5.png'
 PLAYER_JSON_PATH = 'test_name.json'
 
 img = cv2.imread(PATH)
