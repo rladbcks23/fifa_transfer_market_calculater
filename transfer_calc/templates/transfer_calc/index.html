@@ -13,100 +13,116 @@
       <div class="logo">FIFA</div>
     </header>
 
-    <section class="upload-box">
-      <div class="upload-icon">☁</div>
-      <strong>이미지를 업로드해주세요</strong>
-      <p>JPG, PNG 파일 (최대 10MB)</p>
-      <label class="upload-btn">
-        이미지 선택
-        <input type="file" accept="image/png, image/jpeg" hidden>
-      </label>
-    </section>
+    <div class="page-layout">
+      <div class="main-content">
+        <section class="upload-box">
+          <div class="upload-icon">☁</div>
+          <strong>이미지를 업로드해주세요</strong>
+          <p>JPG, PNG 파일 (최대 10MB)</p>
+          <label class="upload-btn">
+            이미지 선택
+            <input id="imageInput" type="file" accept="image/png, image/jpeg" hidden>
+          </label>
+        </section>
 
-    <section class="card">
-      <div class="card-header">
-        <h2>추출된 선수 정보</h2>
-        <span>총 <b id="playerCount">4</b>명</span>
-      </div>
-
-      <div class="table-header">
-        <span>선수 이름</span>
-        <span>가격</span>
-        <span>적용된 할인율</span>
-        <span>할인 후 가격</span>
-        <span>수정</span>
-      </div>
-
-      <div id="playerList" class="player-list"></div>
-
-      <button id="addPlayerBtn" class="add-btn">+ 직접 추가</button>
-    </section>
-
-    <section class="card coupon-card">
-      <div class="coupon-grid">
-        <div class="coupon-field">
-          <label>수쿠 입력 <span>(단위 : %)</span></label>
-          <div class="input-with-unit">
-            <input id="couponRateInput" type="number" placeholder="숫자를 입력하세요">
-            <span>%</span>
+        <section class="card">
+          <div class="card-header">
+            <h2>추출된 선수 정보</h2>
+            <span>총 <b id="playerCount">0</b>명</span>
           </div>
-        </div>
 
-        <div class="coupon-field">
-          <label>한도<span>(단위 : 억)</span></label>
-          <div class="input-with-unit">
-            <input id="couponLimitInput" type="number" placeholder="숫자를 입력하세요">
-            <span>BP</span>
+          <div class="table-header">
+            <span>선수 이름</span>
+            <span>가격</span>
+            <span>적용된 할인율</span>
+            <span>할인 후 가격</span>
+            <span>삭제</span>
           </div>
-        </div>
 
-        <div class="coupon-field">
-          <label>갯수</label>
-          <input id="couponCountInput" type="number" value="1" min="1" class="count-input">
-        </div>
+          <div id="playerList" class="player-list"></div>
 
-        <button id="addCouponBtn" class="coupon-add-btn">+ 추가</button>
-      </div>
-    </section>
+          <button id="addPlayerBtn" class="add-btn">+ 직접 추가</button>
+        </section>
 
-    <section class="result-card">
-      <div class="result-top">
-        <div>
-          <h2>최종 가격 <span>(수수료 제외)</span></h2>
-          <strong id="finalPrice">0 BP</strong>
-        </div>
+        <section class="card coupon-card">
+          <div class="coupon-grid">
+            <div class="coupon-field">
+              <label>수쿠 입력 <span>(단위 : %)</span></label>
+              <div class="input-with-unit">
+                <input id="couponRateInput" type="number" placeholder="숫자를 입력하세요">
+                <span>%</span>
+              </div>
+            </div>
 
-        <div class="summary">
-          <div>
-            <span>총 할인 후 가격</span>
-            <b id="totalDiscountPrice">0 BP</b>
+            <div class="coupon-field">
+              <label>한도<span>(단위 : 억)</span></label>
+              <div class="input-with-unit">
+                <input id="couponLimitInput" type="number" placeholder="숫자를 입력하세요">
+                <span>BP</span>
+              </div>
+            </div>
+
+            <div class="coupon-field">
+              <label>갯수</label>
+              <input id="couponCountInput" type="number" value="1" min="1" class="count-input">
+            </div>
+
+            <button id="addCouponBtn" class="coupon-add-btn">+ 추가</button>
           </div>
-          <div>
-            <span>수쿠</span>
-            <b id="couponPrice">0 BP</b>
+        </section>
+
+        <section class="result-card">
+          <div class="result-top">
+            <div>
+              <h2>최종 가격 <span>(수수료 제외)</span></h2>
+              <strong id="finalPrice">0 BP</strong>
+            </div>
+
+            <div class="summary">
+              <div>
+                <span>총 할인 후 가격</span>
+                <b id="totalDiscountPrice">0 BP</b>
+              </div>
+              <div>
+                <span>수쿠</span>
+                <b id="couponPrice">0 BP</b>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div class="formula">
+            <div>
+              <span>최종 가격 (수수료 제외)</span>
+              <b id="formulaFinal">0 BP</b>
+            </div>
+            <strong>=</strong>
+            <div>
+              <span>총 할인 후 가격</span>
+              <b id="formulaTotal">0 BP</b>
+            </div>
+            <strong>-</strong>
+            <div>
+              <span>수쿠</span>
+              <b id="formulaCoupon">0 BP</b>
+            </div>
+          </div>
+        </section>
+
+        <p class="bottom-info">ⓘ 입력 값을 수정하면 결과가 자동으로 반영됩니다.</p>
       </div>
 
-      <div class="formula">
-        <div>
-          <span>최종 가격 (수수료 제외)</span>
-          <b id="formulaFinal">0 BP</b>
-        </div>
-        <strong>=</strong>
-        <div>
-          <span>총 할인 후 가격</span>
-          <b id="formulaTotal">0 BP</b>
-        </div>
-        <strong>-</strong>
-        <div>
-          <span>수쿠</span>
-          <b id="formulaCoupon">0 BP</b>
-        </div>
-      </div>
-    </section>
+      <aside class="image-panel">
+        <h3>업로드 이미지</h3>
+        <div id="uploadedImageList" class="uploaded-image-list"></div>
+      </aside>
+    </div>
 
-    <p class="bottom-info">ⓘ 입력 값을 수정하면 결과가 자동으로 반영됩니다.</p>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>이미지 분석 중입니다...</p>
+      </div>
+    </div>
   </main>
 
   <script src="{% static 'js/main.js' %}"></script>
