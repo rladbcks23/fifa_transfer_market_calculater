@@ -1,0 +1,59 @@
+img1
+{'name': '데니스 베르캄프', 'overall': '134', 'price': '948조'}
+{'name': '티에리 앙리', 'overall': '132', 'price': '900조'}
+{'name': '알렉시스 산체스', 'overall': '130', 'price': '203조'}
+{'name': '파트리크 비에이라', 'overall': '130', 'price': '97조'}
+{'name': '마르코반바스템', 'overall': '129', 'price': '83조1,000억'}
+{'name': '킬리안 음바페', 'overall': '128', 'price': '69조 5,000억'}
+{'name': '엘리스이위비', 'overall': '132', 'price': '58조7,000억'}
+{'name': '세아드 콜라시나츠', 'overall': '130', 'price': '56조 3,000억'}
+{'name': '야프 스탐', 'overall': '124', 'price': '8조6,000억'}
+{'name': '사디오 마네', 'overall': '122', 'price': '4조8,800억'}
+{'name': '홍명보', 'overall': '114', 'price': '3,490억'}
+
+
+
+
+img2
+{'name': '호나우지뉴', 'overall': '113', 'price': '1,610억'}
+{'name': '조던현더손', 'overall': '112', 'price': '791억'}
+{'name': '하비에르 사네티', 'overall': '110', 'price': '327억'}
+{'name': '루드풀리트', 'overall': '109', 'price': '220억'}
+{'name': '두에', 'overall': '101', 'price': '196억'}
+{'name': None, 'overall': '104', 'price': '196억'}
+{'name': '온카올라', 'overall': '98', 'price': '185억'}
+{'name': '조던 아이유', 'overall': '99', 'price': '167억'}
+
+
+
+
+img3
+{'name': '디에고 차라', 'overall': '106', 'price': '410억'}
+{'name': '박지성', 'overall': '103', 'price': '361억'}
+{'name': '로이 킨', 'overall': '106', 'price': '354억'}
+{'name': '데일리 블린트', 'overall': '100', 'price': '347억'}
+{'name': None, 'overall': '101', 'price': '332억'}
+{'name': '하비에르 사네티', 'overall': '110', 'price': '327억'}
+{'name': '루드꿀리트', 'overall': '109', 'price': '220억'}
+{'name': '두에', 'overall': '101', 'price': '196억'}
+{'name': None, 'overall': '104', 'price': '196억'}
+{'name': '온카올라', 'overall': '98', 'price': '185억'}
+{'name': '조던 아이유', 'overall': '99', 'price': '167억'}
+
+
+
+
+
+
+img4
+{'name': '테오 에르난데스', 'overall': '113', 'price': '3,270억'}
+{'name': '조르지뇨베이날둠', 'overall': '113', 'price': '3,080억'}
+{'name': '나초 페르난데스', 'overall': '113', 'price': '2,580억'}
+{'name': '조골', 'overall': '112', 'price': '1,770억'}
+{'name': None, 'overall': '113', 'price': '1,610억'}
+{'name': '조던현더손', 'overall': '112', 'price': '791억'}
+{'name': '페데리코 키에사', 'overall': '110', 'price': '663억'}
+{'name': '페트르 체흐', 'overall': '110', 'price': '581억'}
+{'name': '나홀로바랗라', 'overall': '110', 'price': '575억'}
+{'name': '네우엔 페레스', 'overall': '110', 'price': '515억'}
+{'name': '데니스베르감프', 'overall': '110', 'price': '414억'}
