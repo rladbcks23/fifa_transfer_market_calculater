@@ -43,11 +43,30 @@
 
           <button id="addPlayerBtn" class="add-btn">+ 직접 추가</button>
         </section>
+        
+        <section class="card membership-card">
+          <div class="membership-row">
+            <span>프리미엄 PC방 기본수수료 30% 할인</span>
+            <label class="switch">
+              <input id="pcRoomToggle" type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="membership-row">
+            <span>TOP CLASS 기본수수료 20% 할인</span>
+            <label class="switch">
+              <input id="topClassToggle" type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
 
         <section class="card coupon-card">
           <div class="coupon-grid">
+            
             <div class="coupon-field">
-              <label>수쿠 입력 <span>(단위 : %)</span></label>
+              <label>수수료 쿠폰 입력 <span>(단위 : %)</span></label>
               <div class="input-with-unit">
                 <input id="couponRateInput" type="number" placeholder="숫자를 입력하세요">
                 <span>%</span>
@@ -69,6 +88,7 @@
 
             <button id="addCouponBtn" class="coupon-add-btn">+ 추가</button>
           </div>
+          <div id="couponList" class="coupon-list"></div>
         </section>
 
         <section class="result-card">
@@ -80,11 +100,11 @@
 
             <div class="summary">
               <div>
-                <span>총 할인 후 가격</span>
+                <span>판매 가격</span>
                 <b id="totalDiscountPrice">0 BP</b>
               </div>
               <div>
-                <span>수쿠</span>
+                <span>수수료</span>
                 <b id="couponPrice">0 BP</b>
               </div>
             </div>
@@ -97,12 +117,12 @@
             </div>
             <strong>=</strong>
             <div>
-              <span>총 할인 후 가격</span>
+              <span>판매 가격</span>
               <b id="formulaTotal">0 BP</b>
             </div>
             <strong>-</strong>
             <div>
-              <span>수쿠</span>
+              <span>수수료</span>
               <b id="formulaCoupon">0 BP</b>
             </div>
           </div>

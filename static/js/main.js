@@ -1,6 +1,8 @@
 let players = [];
 let coupons = [];
 
+const BASE_FEE_RATE = 0.4;
+
 const playerList = document.getElementById("playerList");
 const playerCount = document.getElementById("playerCount");
 
@@ -11,6 +13,12 @@ const addCouponBtn = document.getElementById("addCouponBtn");
 
 const imageInput = document.getElementById("imageInput");
 const uploadedImageList = document.getElementById("uploadedImageList");
+const loadingOverlay = document.getElementById("loadingOverlay");
+
+const pcRoomToggle = document.getElementById("pcRoomToggle");
+const topClassToggle = document.getElementById("topClassToggle");
+
+const couponList = document.getElementById("couponList");
 
 // ---------------- 가격 처리 ----------------
 function parseBp(value) {
@@ -45,20 +53,77 @@ function formatBp(eok) {
   return `${rest.toLocaleString()}억 BP`;
 }
 
-// ---------------- 수쿠 ----------------
-function getBestCouponDiscount(price) {
-  if (coupons.length === 0) return 0;
+// ---------------- 쿠폰 배정 ----------------
+function getAssignedCouponMap() {
+  const couponMap = new Map();
 
-  let maxDiscount = 0;
+  const sortedPlayers = players
+    .map((p, index) => ({
+      index,
+      price: parseBp(p.price),
+    }))
+    .sort((a, b) => b.price - a.price);
 
-  coupons.forEach((coupon) => {
-    const discount = price * (coupon.rate / 100);
-    const limited = Math.min(discount, coupon.limit);
+  const sortedCoupons = [...coupons].sort((a, b) => b.rate - a.rate);
 
-    if (limited > maxDiscount) maxDiscount = limited;
+  sortedPlayers.forEach((p, i) => {
+    if (sortedCoupons[i]) {
+      couponMap.set(p.index, sortedCoupons[i]);
+    }
   });
 
-  return maxDiscount;
+  return couponMap;
+}
+
+// ---------------- 수수료 계산 ----------------
+function getGlobalFeeDiscountRate() {
+  let rate = 0;
+
+  if (pcRoomToggle?.checked) rate += 30;
+  if (topClassToggle?.checked) rate += 20;
+
+  return rate;
+}
+
+function getFinalPrice(price, coupon = null) {
+  const baseFee = price * BASE_FEE_RATE;
+
+  const globalDiscount = baseFee * (getGlobalFeeDiscountRate() / 100);
+
+  let couponDiscount = 0;
+
+  if (coupon) {
+    const discount = baseFee * (coupon.rate / 100);
+    couponDiscount = Math.min(discount, coupon.limit);
+  }
+
+  const finalFee = Math.max(0, baseFee - globalDiscount - couponDiscount);
+
+  return price - finalFee;
+}
+
+function getCouponDiscountAmount(price, coupon = null) {
+  if (!coupon) return 0;
+
+  const baseFee = price * BASE_FEE_RATE;
+  const discount = baseFee * (coupon.rate / 100);
+
+  return Math.min(discount, coupon.limit);
+}
+
+// ---------------- 라벨 ----------------
+function getAppliedDiscountLabel(price, coupon = null) {
+  const labels = [];
+
+  if (pcRoomToggle?.checked) labels.push("PC방");
+  if (topClassToggle?.checked) labels.push("TOP");
+
+  if (coupon) {
+    const couponDiscount = getCouponDiscountAmount(price, coupon);
+    labels.push(`수쿠 ${coupon.rate}% (${formatBp(couponDiscount)})`);
+  }
+
+  return labels.length ? labels.join(" + ") : "-";
 }
 
 // ---------------- 렌더 ----------------
@@ -66,10 +131,12 @@ function renderPlayers() {
   playerList.innerHTML = "";
   playerCount.textContent = players.length;
 
+  const couponMap = getAssignedCouponMap();
+
   players.forEach((player, index) => {
     const price = parseBp(player.price);
-    const discount = getBestCouponDiscount(price);
-    const afterPrice = price - discount;
+    const coupon = couponMap.get(index) || null;
+    const afterPrice = getFinalPrice(price, coupon);
 
     const row = document.createElement("div");
     row.className = "player-row";
@@ -77,7 +144,7 @@ function renderPlayers() {
     row.innerHTML = `
       <input class="name-input" value="${player.name}" data-index="${index}">
       <input class="price-input" value="${player.price}" data-index="${index}">
-      <div class="discount-rate">${coupons.length ? "적용" : "-"}</div>
+      <div class="discount-rate">${getAppliedDiscountLabel(price, coupon)}</div>
       <div class="discount-price">${formatBp(afterPrice)}</div>
       <button class="delete-btn" data-index="${index}">삭제</button>
     `;
@@ -89,25 +156,22 @@ function renderPlayers() {
   calculateResult();
 }
 
+// ---------------- 이벤트 ----------------
 function bindEvents() {
   document.querySelectorAll(".price-input").forEach((input) => {
     input.addEventListener("input", (e) => {
-      const i = e.target.dataset.index;
-      players[i].price = e.target.value;
-
-      const row = e.target.closest(".player-row");
-      const price = parseBp(players[i].price);
-      const after = price - getBestCouponDiscount(price);
-
-      row.querySelector(".discount-price").textContent = formatBp(after);
+      players[e.target.dataset.index].price = e.target.value;
       calculateResult();
+    });
+
+    input.addEventListener("change", () => {
+      renderPlayers();
     });
   });
 
   document.querySelectorAll(".name-input").forEach((input) => {
     input.addEventListener("input", (e) => {
-      const i = e.target.dataset.index;
-      players[i].name = e.target.value;
+      players[e.target.dataset.index].name = e.target.value;
     });
   });
 
@@ -121,26 +185,29 @@ function bindEvents() {
 
 // ---------------- 결과 ----------------
 function calculateResult() {
-  let total = 0;
-  let discount = 0;
+  let totalBefore = 0;
+  let totalAfter = 0;
 
-  players.forEach((p) => {
+  const couponMap = getAssignedCouponMap();
+
+  players.forEach((p, index) => {
     const price = parseBp(p.price);
-    const d = getBestCouponDiscount(price);
+    const coupon = couponMap.get(index) || null;
+    const final = getFinalPrice(price, coupon);
 
-    total += price;
-    discount += d;
+    totalBefore += price;
+    totalAfter += final;
   });
 
-  const final = total - discount;
+  const fee = totalBefore - totalAfter;
 
-  document.getElementById("finalPrice").textContent = formatBp(final);
-  document.getElementById("totalDiscountPrice").textContent = formatBp(total);
-  document.getElementById("couponPrice").textContent = formatBp(discount);
+  document.getElementById("finalPrice").textContent = formatBp(totalAfter);
+  document.getElementById("totalDiscountPrice").textContent = formatBp(totalBefore);
+  document.getElementById("couponPrice").textContent = formatBp(fee);
 
-  document.getElementById("formulaTotal").textContent = formatBp(total);
-  document.getElementById("formulaCoupon").textContent = formatBp(discount);
-  document.getElementById("formulaFinal").textContent = formatBp(final);
+  document.getElementById("formulaTotal").textContent = formatBp(totalBefore);
+  document.getElementById("formulaCoupon").textContent = formatBp(fee);
+  document.getElementById("formulaFinal").textContent = formatBp(totalAfter);
 }
 
 // ---------------- 선수 추가 ----------------
@@ -149,14 +216,16 @@ document.getElementById("addPlayerBtn").addEventListener("click", () => {
   renderPlayers();
 });
 
-// ---------------- 수쿠 추가 ----------------
+// ---------------- 수쿠 추가 (한도 optional) ----------------
 addCouponBtn.addEventListener("click", () => {
   const rate = Number(couponRateInput.value);
-  const limit = Number(couponLimitInput.value);
+  const limit = couponLimitInput.value
+    ? Number(couponLimitInput.value)
+    : Infinity;
   const count = Number(couponCountInput.value) || 1;
 
-  if (!rate || !limit) {
-    alert("수쿠와 한도를 입력해주세요.");
+  if (!rate) {
+    alert("수쿠를 입력하세요");
     return;
   }
 
@@ -168,9 +237,15 @@ addCouponBtn.addEventListener("click", () => {
   couponLimitInput.value = "";
   couponCountInput.value = 1;
 
+  renderCoupons();
   renderPlayers();
 });
 
+// ---------------- 토글 ----------------
+pcRoomToggle?.addEventListener("change", renderPlayers);
+topClassToggle?.addEventListener("change", renderPlayers);
+
+// ---------------- 이미지 ----------------
 function addImageToPanel(file) {
   const url = URL.createObjectURL(file);
 
@@ -195,7 +270,6 @@ imageInput.addEventListener("change", async (e) => {
   formData.append("image", file);
 
   try {
-    // 👉 로딩 시작
     loadingOverlay.classList.add("active");
 
     const res = await fetch("/upload-image/", {
@@ -205,25 +279,50 @@ imageInput.addEventListener("change", async (e) => {
 
     const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.error || "OCR 실패");
-      return;
-    }
-
-    players = data.players.map((p) => ({
+    const newPlayers = data.players.map((p) => ({
       name: p.name || "",
       price: p.price || "",
     }));
 
+    players.push(...newPlayers);
+
     renderPlayers();
   } catch (err) {
     console.error(err);
-    alert("업로드 중 오류 발생");
   } finally {
-    // 👉 로딩 종료 (무조건 실행)
     loadingOverlay.classList.remove("active");
     imageInput.value = "";
   }
 });
+
+function renderCoupons() {
+  couponList.innerHTML = "";
+
+  coupons.forEach((coupon, index) => {
+    const item = document.createElement("div");
+    item.className = "coupon-item";
+
+    const limitText = coupon.limit === Infinity
+      ? "한도 없음"
+      : `${coupon.limit.toLocaleString()}억 BP`;
+
+    item.innerHTML = `
+      <strong>수쿠 ${coupon.rate}%</strong>
+      <span>${limitText}</span>
+      <button class="coupon-delete-btn" data-index="${index}">삭제</button>
+    `;
+
+    couponList.appendChild(item);
+  });
+
+  document.querySelectorAll(".coupon-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const index = Number(e.target.dataset.index);
+      coupons.splice(index, 1);
+      renderCoupons();
+      renderPlayers();
+    });
+  });
+}
 
 renderPlayers();

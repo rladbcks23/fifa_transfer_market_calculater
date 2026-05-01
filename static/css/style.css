@@ -176,7 +176,7 @@ body {
 .table-header,
 .player-row {
   display: grid;
-  grid-template-columns: 1.4fr 1.3fr 1fr 1.3fr 0.7fr;
+  grid-template-columns: 1.2fr 1.1fr 2fr 1.2fr 0.7fr;
 }
 .table-header {
   padding: 16px 46px;
@@ -442,4 +442,109 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+.membership-card {
+  padding: 0;
+  overflow: hidden;
+  border-top: 4px solid #24243a;
+}
+
+.membership-row {
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e3e8ef;
+}
+
+.membership-row:last-child {
+  border-bottom: none;
+}
+
+.membership-row span {
+  font-size: 15px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: #d8d2ee;
+  border-radius: 999px;
+  transition: 0.2s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 3px;
+  left: 4px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.switch input:checked + .slider {
+  background: #12b862;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+.coupon-list {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coupon-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 80px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.coupon-item strong {
+  color: #12b862;
+  font-size: 16px;
+}
+
+.coupon-item span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.coupon-delete-btn {
+  height: 36px;
+  border: 1px solid #dce3ec;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.coupon-delete-btn:hover {
+  color: #ef4444;
+  border-color: #ef4444;
 }
