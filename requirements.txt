@@ -5,6 +5,7 @@ Django==5.2.13
 easyocr==1.7.2
 filelock==3.29.0
 fsspec==2026.4.0
+gunicorn==25.3.0
 idna==3.13
 ImageIO==2.37.3
 Jinja2==3.1.6
