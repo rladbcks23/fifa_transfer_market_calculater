@@ -13,6 +13,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 
+reader = easyocr.Reader(["ko", "en"])
+
 PLAYER_JSON_PATH = settings.BASE_DIR / "static" / "json" / "players_name.json"
 
 with open(PLAYER_JSON_PATH, "r", encoding="utf-8") as f:
@@ -25,11 +27,6 @@ END_WORD = "판매완료"
 
 def index(request):
     return render(request, "transfer_calc/index.html")
-
-
-# ✅ OCR reader를 요청마다 생성 (전역 제거)
-def get_reader():
-    return easyocr.Reader(["ko", "en"])
 
 
 def has_korean(text):
@@ -188,26 +185,13 @@ def upload_image(request):
     if not image_file:
         return JsonResponse({"error": "이미지 파일이 없습니다."}, status=400)
 
-    try:
-        file_bytes = np.frombuffer(image_file.read(), np.uint8)
-        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    file_bytes = np.frombuffer(image_file.read(), np.uint8)
+    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-        if img is None:
-            return JsonResponse({"error": "이미지를 읽을 수 없습니다."}, status=400)
+    if img is None:
+        return JsonResponse({"error": "이미지를 읽을 수 없습니다."}, status=400)
 
-        # ✅ 이미지 강제 축소 (메모리 절약 핵심)
-        img = cv2.resize(img, (800, 800))
-
-        print("OCR 시작")
-
-        reader = get_reader()  # ← 여기서 생성
-        results = reader.readtext(img)
-
-        print("OCR 완료")
-
-    except Exception as e:
-        print("OCR 에러:", e)
-        return JsonResponse({"error": "OCR 처리 중 오류 발생"}, status=500)
+    results = reader.readtext(img)
 
     texts = []
 
