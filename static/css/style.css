@@ -176,7 +176,7 @@ body {
 .table-header,
 .player-row {
   display: grid;
-  grid-template-columns: 1.2fr 1.1fr 2fr 1.2fr 0.7fr;
+  grid-template-columns: 1.2fr 2fr 1.2fr 0.7fr;
 }
 .table-header {
   padding: 16px 46px;
@@ -200,10 +200,6 @@ body {
   border: 1px solid #e3e8ef;
   border-radius: 12px;
 }
-.player-name {
-  font-size: 23px;
-  font-weight: 800;
-}
 .discount-rate {
   color: #12b862;
   font-size: 22px;
@@ -214,7 +210,6 @@ body {
   font-weight: 800;
 }
 .price-input,
-.name-input,
 .count-input {
   width: 100%;
   border: 1px solid #dce3ec;
@@ -224,19 +219,11 @@ body {
   padding: 18px 20px;
   font-size: 22px;
 }
-.name-input {
-  height: 52px;
-  padding: 0 16px;
-  font-size: 18px;
-  font-weight: 700;
-  outline: none;
-}
 .count-input {
   height: 58px;
   padding: 0 16px;
   font-size: 18px;
 }
-.name-input:focus,
 .price-input:focus {
   border-color: #12b862;
   box-shadow: 0 0 0 3px rgba(18, 184, 98, 0.12);

@@ -3,7 +3,6 @@
 
 {% block content %}
   <main class="container">
-
     <header class="header">
       <div>
         <h1>피파 <span>수수료</span> 계산기</h1>
@@ -26,12 +25,11 @@
 
         <section class="card">
           <div class="card-header">
-            <h2>추출된 선수 정보</h2>
-            <span>총 <b id="playerCount">0</b>명</span>
+            <h2>추출된 가격 정보</h2>
+            <span>총 <b id="playerCount">0</b>개</span>
           </div>
 
           <div class="table-header">
-            <span>선수 이름</span>
             <span>가격</span>
             <span>적용된 할인율</span>
             <span>할인 후 가격</span>
@@ -42,7 +40,7 @@
 
           <button id="addPlayerBtn" class="add-btn">+ 직접 추가</button>
         </section>
-        
+
         <section class="card membership-card">
           <div class="membership-row">
             <span>프리미엄 PC방 기본수수료 30% 할인</span>
@@ -63,7 +61,6 @@
 
         <section class="card coupon-card">
           <div class="coupon-grid">
-            
             <div class="coupon-field">
               <label>수수료 쿠폰 입력 <span>(단위 : %)</span></label>
               <div class="input-with-unit">
@@ -81,7 +78,7 @@
             </div>
 
             <div class="coupon-field">
-              <label>갯수</label>
+              <label>개수</label>
               <input id="couponCountInput" type="number" value="1" min="1" class="count-input">
             </div>
 
@@ -111,7 +108,7 @@
 
           <div class="formula">
             <div>
-              <span>최종 가격 (수수료 제외)</span>
+              <span>최종 가격(수수료 제외)</span>
               <b id="formulaFinal">0 BP</b>
             </div>
             <strong>=</strong>
@@ -127,7 +124,7 @@
           </div>
         </section>
 
-        <p class="bottom-info">ⓘ 입력 값을 수정하면 결과가 자동으로 반영됩니다.</p>
+        <p class="bottom-info">입력 값을 수정하면 결과가 자동으로 반영됩니다.</p>
       </div>
 
       <aside class="image-panel">

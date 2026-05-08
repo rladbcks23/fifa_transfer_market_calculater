@@ -1,25 +1,14 @@
-import json
 import re
+
 import cv2
-import numpy as np
 import easyocr
-
-from pathlib import Path
-from rapidfuzz import process, fuzz
-
-from django.conf import settings
+import numpy as np
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 
 reader = easyocr.Reader(["ko", "en"])
-
-PLAYER_JSON_PATH = settings.BASE_DIR / "static" / "json" / "players_name.json"
-
-with open(PLAYER_JSON_PATH, "r", encoding="utf-8") as f:
-    PLAYER_NAMES = json.load(f)
-
 
 IGNORE_WORDS = {"받기", "반기"}
 END_WORD = "판매완료"
@@ -29,66 +18,12 @@ def index(request):
     return render(request, "transfer_calc/index.html")
 
 
-def has_korean(text):
-    return bool(re.search(r"[가-힣]", text))
-
-
-def clean_name(text):
-    text = re.sub(r"[^가-힣\s]", "", text).strip()
-    chunks = re.findall(r"[가-힣]{2,}", text)
-
-    if not chunks:
-        return ""
-
-    return max(chunks, key=len)
-
-
-def normalize_name(name):
-    if not name:
-        return ""
-
-    return clean_name(name).replace(" ", "")
-
-
-NORMALIZED_PLAYER_MAP = {
-    normalize_name(name): name
-    for name in PLAYER_NAMES
-    if normalize_name(name)
-}
-
-
-def find_best_name(ocr_name, threshold=45):
-    if not ocr_name:
-        return None
-
-    query = normalize_name(ocr_name)
-
-    match = process.extractOne(
-        query,
-        NORMALIZED_PLAYER_MAP.keys(),
-        scorer=fuzz.WRatio,
-    )
-
-    if match is None:
-        return ocr_name
-
-    matched_key, score, _ = match
-
-    if len(matched_key) <= 3 and len(query) >= 5:
-        return ocr_name
-
-    if score >= threshold:
-        return NORMALIZED_PLAYER_MAP[matched_key]
-
-    return ocr_name
-
-
 def is_price(text):
-    return bool(re.search(r"\d[\d,\s]*(조|억)", text))
+    return bool(re.search(r"\d[\d,\s]*(?:조|억)", text))
 
 
 def clean_price(text):
-    match = re.search(r"\d[\d,\s]*(?:조)?\s*\d*[\d,\s]*(?:억)?", text)
+    match = re.search(r"\d[\d,\s]*(?:조\s*\d*[\d,\s]*(?:억)?|억)", text)
 
     if not match:
         return None
@@ -99,18 +34,6 @@ def clean_price(text):
         return None
 
     return price
-
-
-def is_overall(text):
-    return text.isdigit() and 90 <= int(text) <= 150
-
-
-def is_upgrade_number(text):
-    return text.isdigit() and 1 <= int(text) <= 40
-
-
-def is_noise(text):
-    return text in IGNORE_WORDS or text == END_WORD
 
 
 def extract_player_from_group(group):
@@ -129,56 +52,13 @@ def extract_player_from_group(group):
     if price is None:
         return None
 
-    before_price = group[:price_idx]
-
-    overall = None
-    overall_idx = -1
-
-    for i in range(len(before_price) - 1, -1, -1):
-        text = before_price[i]
-
-        if is_overall(text):
-            overall = text
-            overall_idx = i
-            break
-
-    name_area = before_price[:overall_idx] if overall_idx != -1 else before_price
-
-    name_candidates = []
-
-    for text in name_area:
-        if is_noise(text):
-            continue
-
-        if is_price(text):
-            continue
-
-        if is_overall(text):
-            continue
-
-        if is_upgrade_number(text):
-            continue
-
-        cleaned = clean_name(text)
-
-        if cleaned:
-            name_candidates.append(cleaned)
-
-    name = max(name_candidates, key=len) if name_candidates else ""
-
-    corrected_name = find_best_name(name)
-
-    return {
-        "name": corrected_name or name,
-        "overall": overall,
-        "price": price,
-    }
+    return {"price": price}
 
 
 @csrf_exempt
 def upload_image(request):
     if request.method != "POST":
-        return JsonResponse({"error": "POST 요청만 허용됩니다."}, status=405)
+        return JsonResponse({"error": "POST 요청만 허용합니다."}, status=405)
 
     image_file = request.FILES.get("image")
 
@@ -195,7 +75,7 @@ def upload_image(request):
 
     texts = []
 
-    for bbox, text, prob in results:
+    for _bbox, text, prob in results:
         text = text.strip()
 
         if not text:
@@ -212,13 +92,6 @@ def upload_image(request):
             texts.append(text)
             continue
 
-        if has_korean(text) and prob > 0.15:
-            texts.append(text)
-            continue
-
-        if prob > 0.3:
-            texts.append(text)
-
     groups = []
     current = []
 
@@ -230,6 +103,9 @@ def upload_image(request):
             continue
 
         current.append(text)
+
+    if current:
+        groups.append(current)
 
     players = []
 

@@ -142,7 +142,6 @@ function renderPlayers() {
     row.className = "player-row";
 
     row.innerHTML = `
-      <input class="name-input" value="${player.name}" data-index="${index}">
       <input class="price-input" value="${player.price}" data-index="${index}">
       <div class="discount-rate">${getAppliedDiscountLabel(price, coupon)}</div>
       <div class="discount-price">${formatBp(afterPrice)}</div>
@@ -166,12 +165,6 @@ function bindEvents() {
 
     input.addEventListener("change", () => {
       renderPlayers();
-    });
-  });
-
-  document.querySelectorAll(".name-input").forEach((input) => {
-    input.addEventListener("input", (e) => {
-      players[e.target.dataset.index].name = e.target.value;
     });
   });
 
@@ -212,7 +205,7 @@ function calculateResult() {
 
 // ---------------- 선수 추가 ----------------
 document.getElementById("addPlayerBtn").addEventListener("click", () => {
-  players.push({ name: "", price: "" });
+  players.push({ price: "" });
   renderPlayers();
 });
 
@@ -280,7 +273,6 @@ imageInput.addEventListener("change", async (e) => {
     const data = await res.json();
 
     const newPlayers = data.players.map((p) => ({
-      name: p.name || "",
       price: p.price || "",
     }));
 
