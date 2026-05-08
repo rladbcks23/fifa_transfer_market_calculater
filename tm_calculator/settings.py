@@ -25,10 +25,28 @@ SECRET_KEY = 'django-insecure-bjp7olrw))+m3_5crst*1z32u-6@c*8xkz95elt6+6p!(0_%yd
 
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "localhost,127.0.0.1,testserver",
-).split(",")
+def parse_allowed_hosts(value):
+    hosts = []
+
+    for host in value.split(","):
+        host = host.strip()
+        host = host.removeprefix("https://").removeprefix("http://")
+        host = host.rstrip("/")
+
+        if host:
+            hosts.append(host)
+
+    return hosts
+
+
+ALLOWED_HOSTS = parse_allowed_hosts(
+    os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,testserver")
+)
+
+render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_hostname)
 
 
 # Application definition
