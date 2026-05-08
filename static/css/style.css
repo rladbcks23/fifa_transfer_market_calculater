@@ -69,6 +69,12 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.upload-box.drag-over {
+  border-color: #12b862;
+  background: #f0fdf6;
+  box-shadow: 0 0 0 4px rgba(18, 184, 98, 0.12);
 }
 .upload-icon {
   font-size: 54px;

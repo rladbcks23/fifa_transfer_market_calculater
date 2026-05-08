@@ -12,6 +12,7 @@ const couponCountInput = document.getElementById("couponCountInput");
 const addCouponBtn = document.getElementById("addCouponBtn");
 
 const imageInput = document.getElementById("imageInput");
+const uploadBox = document.getElementById("uploadBox");
 const uploadedImageList = document.getElementById("uploadedImageList");
 const loadingOverlay = document.getElementById("loadingOverlay");
 
@@ -51,6 +52,15 @@ function formatBp(eok) {
   if (jo > 0) return `${jo}조 BP`;
 
   return `${rest.toLocaleString()}억 BP`;
+}
+
+function getPriceInputNumber(value) {
+  return value.replace(/[^\d]/g, "");
+}
+
+function formatPriceInput(value) {
+  const price = parseBp(value);
+  return price > 0 ? formatBp(price) : "";
 }
 
 // ---------------- 쿠폰 배정 ----------------
@@ -134,15 +144,17 @@ function renderPlayers() {
   const couponMap = getAssignedCouponMap();
 
   players.forEach((player, index) => {
-    const price = parseBp(player.price);
+    const displayPrice = formatPriceInput(player.price);
+    const price = parseBp(displayPrice);
     const coupon = couponMap.get(index) || null;
     const afterPrice = getFinalPrice(price, coupon);
 
     const row = document.createElement("div");
     row.className = "player-row";
+    row.dataset.index = index;
 
     row.innerHTML = `
-      <input class="price-input" value="${player.price}" data-index="${index}">
+      <input class="price-input" value="${displayPrice}" data-index="${index}" inputmode="numeric">
       <div class="discount-rate">${getAppliedDiscountLabel(price, coupon)}</div>
       <div class="discount-price">${formatBp(afterPrice)}</div>
       <button class="delete-btn" data-index="${index}">삭제</button>
@@ -155,16 +167,48 @@ function renderPlayers() {
   calculateResult();
 }
 
+function updatePlayerRows() {
+  const couponMap = getAssignedCouponMap();
+
+  document.querySelectorAll(".player-row").forEach((row) => {
+    const index = Number(row.dataset.index);
+    const player = players[index];
+
+    if (!player) return;
+
+    const price = parseBp(player.price);
+    const coupon = couponMap.get(index) || null;
+    const afterPrice = getFinalPrice(price, coupon);
+
+    row.querySelector(".discount-rate").textContent = getAppliedDiscountLabel(price, coupon);
+    row.querySelector(".discount-price").textContent = formatBp(afterPrice);
+  });
+}
+
 // ---------------- 이벤트 ----------------
 function bindEvents() {
   document.querySelectorAll(".price-input").forEach((input) => {
+    input.addEventListener("focus", (e) => {
+      const price = parseBp(players[e.target.dataset.index].price);
+      e.target.value = price > 0 ? String(price) : "";
+    });
+
     input.addEventListener("input", (e) => {
-      players[e.target.dataset.index].price = e.target.value;
+      const rawPrice = getPriceInputNumber(e.target.value);
+      players[e.target.dataset.index].price = rawPrice;
+      e.target.value = rawPrice;
+      updatePlayerRows();
       calculateResult();
     });
 
-    input.addEventListener("change", () => {
+    input.addEventListener("blur", () => {
       renderPlayers();
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.target.blur();
+      }
     });
   });
 
@@ -210,7 +254,7 @@ document.getElementById("addPlayerBtn").addEventListener("click", () => {
 });
 
 // ---------------- 수쿠 추가 (한도 optional) ----------------
-addCouponBtn.addEventListener("click", () => {
+function addCoupon() {
   const rate = Number(couponRateInput.value);
   const limit = couponLimitInput.value
     ? Number(couponLimitInput.value)
@@ -232,6 +276,18 @@ addCouponBtn.addEventListener("click", () => {
 
   renderCoupons();
   renderPlayers();
+  couponRateInput.focus();
+}
+
+addCouponBtn.addEventListener("click", addCoupon);
+
+[couponRateInput, couponLimitInput, couponCountInput].forEach((input) => {
+  input.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+    addCoupon();
+  });
 });
 
 // ---------------- 토글 ----------------
@@ -253,9 +309,12 @@ function addImageToPanel(file) {
   uploadedImageList.appendChild(card);
 }
 
-imageInput.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
+async function uploadImageFile(file) {
   if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    return;
+  }
 
   addImageToPanel(file);
 
@@ -273,7 +332,7 @@ imageInput.addEventListener("change", async (e) => {
     const data = await res.json();
 
     const newPlayers = data.players.map((p) => ({
-      price: p.price || "",
+      price: formatPriceInput(p.price || ""),
     }));
 
     players.push(...newPlayers);
@@ -285,6 +344,30 @@ imageInput.addEventListener("change", async (e) => {
     loadingOverlay.classList.remove("active");
     imageInput.value = "";
   }
+}
+
+imageInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  await uploadImageFile(file);
+});
+
+["dragenter", "dragover"].forEach((eventName) => {
+  uploadBox.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    uploadBox.classList.add("drag-over");
+  });
+});
+
+["dragleave", "drop"].forEach((eventName) => {
+  uploadBox.addEventListener(eventName, (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove("drag-over");
+  });
+});
+
+uploadBox.addEventListener("drop", async (e) => {
+  const file = e.dataTransfer.files[0];
+  await uploadImageFile(file);
 });
 
 function renderCoupons() {
