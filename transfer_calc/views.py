@@ -1,17 +1,17 @@
+import os
 import re
 
-import cv2
-import easyocr
-import numpy as np
+import requests
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 
-reader = easyocr.Reader(["ko", "en"])
-
 IGNORE_WORDS = {"받기", "반기"}
 END_WORD = "판매완료"
+OCR_SERVER_URL = os.environ.get("OCR_SERVER_URL", "http://127.0.0.1:8001/ocr")
+OCR_API_KEY = os.environ.get("OCR_API_KEY")
+MAX_IMAGE_SIZE = int(os.environ.get("MAX_IMAGE_SIZE", 5 * 1024 * 1024))
 
 
 def index(request):
@@ -55,28 +55,12 @@ def extract_player_from_group(group):
     return {"price": price}
 
 
-@csrf_exempt
-def upload_image(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST 요청만 허용합니다."}, status=405)
-
-    image_file = request.FILES.get("image")
-
-    if not image_file:
-        return JsonResponse({"error": "이미지 파일이 없습니다."}, status=400)
-
-    file_bytes = np.frombuffer(image_file.read(), np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-
-    if img is None:
-        return JsonResponse({"error": "이미지를 읽을 수 없습니다."}, status=400)
-
-    results = reader.readtext(img)
-
+def parse_ocr_results(results):
     texts = []
 
-    for _bbox, text, prob in results:
-        text = text.strip()
+    for result in results:
+        text = str(result.get("text", "")).strip()
+        prob = float(result.get("prob", 0))
 
         if not text:
             continue
@@ -116,5 +100,52 @@ def upload_image(request):
             continue
 
         players.append(player)
+
+    return players
+
+
+def request_ocr(image_file):
+    headers = {}
+
+    if OCR_API_KEY:
+        headers["X-OCR-API-Key"] = OCR_API_KEY
+
+    response = requests.post(
+        OCR_SERVER_URL,
+        files={
+            "image": (
+                image_file.name,
+                image_file.read(),
+                image_file.content_type or "application/octet-stream",
+            )
+        },
+        headers=headers,
+        timeout=(5, 120),
+    )
+    response.raise_for_status()
+    return response.json()
+
+
+@csrf_exempt
+def upload_image(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST 요청만 허용합니다."}, status=405)
+
+    image_file = request.FILES.get("image")
+
+    if not image_file:
+        return JsonResponse({"error": "이미지 파일이 없습니다."}, status=400)
+
+    if image_file.size > MAX_IMAGE_SIZE:
+        return JsonResponse({"error": "이미지 파일이 너무 큽니다."}, status=413)
+
+    try:
+        ocr_data = request_ocr(image_file)
+    except requests.Timeout:
+        return JsonResponse({"error": "OCR 서버 응답 시간이 초과되었습니다."}, status=504)
+    except requests.RequestException:
+        return JsonResponse({"error": "OCR 서버에 연결할 수 없습니다."}, status=502)
+
+    players = parse_ocr_results(ocr_data.get("results", []))
 
     return JsonResponse({"players": players})
