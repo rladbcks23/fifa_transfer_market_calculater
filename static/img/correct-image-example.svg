@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1330" height="644" viewBox="0 0 1330 644" role="img" aria-labelledby="title desc">
+  <title id="title">올바른 판매 목록 이미지 예시</title>
+  <desc id="desc">선수명, 가격, 판매 완료 상태가 잘 보이는 판매 목록 캡처 예시</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#14171a"/>
+      <stop offset="0.58" stop-color="#1c2021"/>
+      <stop offset="1" stop-color="#263426"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1a1d20" stop-opacity="0"/>
+      <stop offset="1" stop-color="#294629" stop-opacity=".75"/>
+    </linearGradient>
+    <style>
+      .row:nth-child(odd) .shade{fill:#17191b}
+      .row:nth-child(even) .shade{fill:#202326}
+      .pos{font:700 22px Arial, sans-serif;fill:#f4f7f5}
+      .name,.club{font:700 18px Arial, sans-serif;fill:#f4f7f5}
+      .num,.price,.count{font:800 22px Arial, sans-serif;fill:#f4f7f5}
+      .sold{font:800 18px Arial, sans-serif;fill:#00a8ff}
+      .receive{font:800 16px Arial, sans-serif;fill:#18f07a}
+      .small{font:800 16px Arial, sans-serif;fill:#101417}
+    </style>
+  </defs>
+  <rect width="1330" height="644" fill="url(#bg)"/>
+  <rect y="474" width="1330" height="170" fill="url(#field)"/>
+  <g opacity=".18">
+    <path d="M0 521c170-38 350-23 522-19 286 7 478-50 808-11v153H0z" fill="#5d7a55"/>
+    <path d="M0 602c295-45 563-18 817-26 198-6 349-33 513-8v76H0z" fill="#91a872"/>
+  </g>
+  <g>
+    <g class="row" transform="translate(0 0)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ff3b3b"/><text class="pos" x="46" y="39">ST</text>
+      <circle cx="122" cy="29" r="25" fill="#e9eef4"/><rect x="159" y="20" width="22" height="17" fill="#6b32c9"/><text class="name" x="188" y="37">크리스티아누 호날두</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">29</text>
+      <text class="num" x="437" y="38">124</text><rect x="489" y="20" width="30" height="19" fill="#d9dce6"/><text class="small" x="499" y="36">7</text>
+      <text class="club" x="554" y="37">알나스르</text><text class="price" x="879" y="38">179조</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 58)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#39d06f"/><text class="pos" x="46" y="39">CAM</text>
+      <circle cx="122" cy="29" r="25" fill="#f0448b"/><rect x="159" y="20" width="22" height="17" fill="#8f60de"/><text class="name" x="188" y="37">루드 굴리트</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">31</text>
+      <text class="num" x="437" y="38">122</text><rect x="489" y="20" width="30" height="19" fill="#d9dce6"/><text class="small" x="499" y="36">5</text>
+      <text class="club" x="554" y="37">Wonderboys</text><text class="price" x="819" y="38">51조 1,000억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 116)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#3ca3ff"/><text class="pos" x="46" y="39">CB</text>
+      <circle cx="122" cy="29" r="25" fill="#f2f5fb"/><rect x="159" y="20" width="24" height="17" fill="#a55ce5"/><text class="name" x="188" y="37">아카 비욜</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">26</text>
+      <text class="num" x="437" y="38">129</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">리즈 유나이티드</text><text class="price" x="819" y="38">25조 4,000억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 174)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ff3b3b"/><text class="pos" x="46" y="39">ST</text>
+      <circle cx="122" cy="29" r="25" fill="#232a32"/><rect x="159" y="20" width="22" height="17" fill="#1a9560"/><text class="name" x="188" y="37">잔루카 비알리</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">30</text>
+      <text class="num" x="437" y="38">129</text><rect x="489" y="20" width="30" height="19" fill="#d9dce6"/><text class="small" x="499" y="36">7</text>
+      <text class="club" x="554" y="37">Legend of Europa</text><text class="price" x="819" y="38">23조 9,000억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 232)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ff3b3b"/><text class="pos" x="46" y="39">LW</text>
+      <circle cx="122" cy="29" r="25" fill="#f4f4f4"/><rect x="159" y="20" width="22" height="17" fill="#1a9560"/><text class="name" x="188" y="37">클린트 뎀프시</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">27</text>
+      <text class="num" x="437" y="38">129</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">Legend of Europa</text><text class="price" x="819" y="38">20조 4,000억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 290)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ffd41c"/><text class="pos" x="46" y="39">GK</text>
+      <circle cx="122" cy="29" r="25" fill="#2ac56f"/><rect x="159" y="20" width="22" height="17" fill="#6153c9"/><text class="name" x="188" y="37">티보 쿠르투아</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">24</text>
+      <text class="num" x="437" y="38">128</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">레알 마드리드</text><text class="price" x="819" y="38">17조 1,000억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 348)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#3ca3ff"/><text class="pos" x="46" y="39">RB</text>
+      <circle cx="122" cy="29" r="25" fill="#dbe8f4"/><rect x="159" y="20" width="22" height="17" fill="#6b32c9"/><text class="name" x="188" y="37">뱅자맹 파바르</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">25</text>
+      <text class="num" x="437" y="38">126</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">올랭피크 마르세유</text><text class="price" x="829" y="38">7조 5,600억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 406)">
+      <rect class="shade" width="1330" height="58" opacity=".94"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ff3b3b"/><text class="pos" x="46" y="39">ST</text>
+      <circle cx="122" cy="29" r="25" fill="#e8eef5"/><rect x="159" y="20" width="22" height="17" fill="#b88134"/><text class="name" x="188" y="37">앨런 시어러</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">26</text>
+      <text class="num" x="437" y="38">126</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">Decade</text><text class="price" x="829" y="38">6조 7,800억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 464)">
+      <rect class="shade" width="1330" height="58" opacity=".9"/>
+      <rect x="39" y="20" width="3" height="18" fill="#ff3b3b"/><text class="pos" x="46" y="39">ST</text>
+      <circle cx="122" cy="29" r="25" fill="#f4f4f4"/><rect x="159" y="20" width="22" height="17" fill="#6b32c9"/><text class="name" x="188" y="37">마리오 고메스</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">28</text>
+      <text class="num" x="437" y="38">124</text><rect x="489" y="20" width="30" height="19" fill="#d9dce6"/><text class="small" x="499" y="36">7</text>
+      <text class="club" x="554" y="37">Unexpected Transfer</text><text class="price" x="829" y="38">6조 2,100억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 522)">
+      <rect class="shade" width="1330" height="58" opacity=".86"/>
+      <rect x="39" y="20" width="3" height="18" fill="#3ca3ff"/><text class="pos" x="46" y="39">CB</text>
+      <circle cx="122" cy="29" r="25" fill="#0f316a"/><rect x="159" y="20" width="24" height="17" fill="#d74132"/><text class="name" x="188" y="37">로랑 블랑</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">26</text>
+      <text class="num" x="437" y="38">125</text><rect x="489" y="20" width="30" height="19" fill="#ffd41c"/><text class="small" x="499" y="36">8</text>
+      <text class="club" x="554" y="37">Journeyman</text><text class="price" x="829" y="38">5조 9,900억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+    <g class="row" transform="translate(0 580)">
+      <rect class="shade" width="1330" height="64" opacity=".82"/>
+      <rect x="39" y="20" width="3" height="18" fill="#39d06f"/><text class="pos" x="46" y="39">CM</text>
+      <circle cx="122" cy="29" r="25" fill="#224a45"/><rect x="159" y="20" width="24" height="17" fill="#5a5caf"/><text class="name" x="188" y="37">강상윤</text>
+      <polygon points="399,15 411,22 411,38 399,45 387,38 387,22" fill="#33383d" stroke="#71777e" stroke-width="2"/><text class="small" x="391" y="36" fill="#e4e7eb">28</text>
+      <text class="num" x="437" y="38">124</text><rect x="489" y="20" width="30" height="19" fill="#d9dce6"/><text class="small" x="499" y="36">6</text>
+      <text class="club" x="554" y="37">전북 현대 모터스</text><text class="price" x="829" y="38">5조 8,900억</text><text class="count" x="976" y="38">1</text><text class="sold" x="1028" y="38">판매 완료</text>
+      <rect x="1120" y="11" width="183" height="34" rx="4" fill="#505557"/><circle cx="1196" cy="28" r="9" fill="#00f070"/><text class="receive" x="1211" y="35">받기</text>
+    </g>
+  </g>
+</svg>
