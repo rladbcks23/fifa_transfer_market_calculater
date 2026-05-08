@@ -331,6 +331,14 @@ async function uploadImageFile(file) {
 
     const data = await res.json();
 
+    if (!res.ok) {
+      throw new Error(data.error || "이미지 분석에 실패했습니다.");
+    }
+
+    if (!Array.isArray(data.players)) {
+      throw new Error("OCR 응답 형식이 올바르지 않습니다.");
+    }
+
     const newPlayers = data.players.map((p) => ({
       price: formatPriceInput(p.price || ""),
     }));
@@ -340,6 +348,7 @@ async function uploadImageFile(file) {
     renderPlayers();
   } catch (err) {
     console.error(err);
+    alert(err.message || "이미지 분석에 실패했습니다.");
   } finally {
     loadingOverlay.classList.remove("active");
     imageInput.value = "";

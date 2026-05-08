@@ -141,6 +141,18 @@ def upload_image(request):
 
     try:
         ocr_data = request_ocr(image_file)
+    except requests.HTTPError as exc:
+        status_code = exc.response.status_code if exc.response is not None else 502
+
+        try:
+            detail = exc.response.json().get("detail")
+        except (AttributeError, ValueError):
+            detail = None
+
+        return JsonResponse(
+            {"error": detail or "OCR 서버가 요청을 처리하지 못했습니다."},
+            status=status_code,
+        )
     except requests.Timeout:
         return JsonResponse({"error": "OCR 서버 응답 시간이 초과되었습니다."}, status=504)
     except requests.RequestException:
