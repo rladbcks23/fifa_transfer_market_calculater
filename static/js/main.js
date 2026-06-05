@@ -2,6 +2,7 @@ let players = [];
 let coupons = [];
 let uploadedImages = [];
 let nextImageId = 1;
+let openImageMenuId = null;
 
 const BASE_FEE_RATE = 0.4;
 
@@ -26,6 +27,10 @@ const couponList = document.getElementById("couponList");
 function getPlayerQuantity(quantity) {
   const parsed = Number(quantity);
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
+}
+
+function getPlayerSummary(player) {
+  return `${formatPriceInput(player.price || "") || "0 BP"} / ${getPlayerQuantity(player.quantity)}개`;
 }
 
 // ---------------- 가격 처리 ----------------
@@ -272,7 +277,22 @@ function bindEvents() {
 
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      players.splice(e.target.dataset.index, 1);
+      const index = Number(e.target.dataset.index);
+      const player = players[index];
+
+      if (player?.sourceImageId) {
+        const image = uploadedImages.find((item) => item.id === player.sourceImageId);
+
+        if (image) {
+          image.deletedPlayers.push({
+            price: player.price,
+            quantity: getPlayerQuantity(player.quantity),
+          });
+        }
+      }
+
+      players.splice(index, 1);
+      renderUploadedImages();
       renderPlayers();
     });
   });
@@ -359,6 +379,7 @@ function addImageToPanel(file) {
     id: nextImageId,
     name: file.name,
     url: URL.createObjectURL(file),
+    deletedPlayers: [],
   };
 
   nextImageId += 1;
@@ -377,6 +398,7 @@ function removeUploadedImage(imageId) {
 
   uploadedImages = uploadedImages.filter((item) => item.id !== imageId);
   players = players.filter((player) => player.sourceImageId !== imageId);
+  openImageMenuId = null;
 
   renderUploadedImages();
   renderPlayers();
@@ -394,19 +416,46 @@ function renderUploadedImages() {
       <img src="${image.url}">
       <div class="uploaded-image-meta">
         <span>${image.name}</span>
-        <button class="uploaded-image-delete-btn" data-image-id="${image.id}" aria-label="Remove image">&times;</button>
+        <button class="uploaded-image-menu-btn" data-image-id="${image.id}" aria-label="Image actions">...</button>
       </div>
+      ${openImageMenuId === image.id ? renderImageMenu(image) : ""}
     `;
 
     uploadedImageList.appendChild(card);
   });
 
-  document.querySelectorAll(".uploaded-image-delete-btn").forEach((btn) => {
+  document.querySelectorAll(".uploaded-image-menu-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const imageId = Number(e.currentTarget.dataset.imageId);
+      openImageMenuId = openImageMenuId === imageId ? null : imageId;
+      renderUploadedImages();
+    });
+  });
+
+  document.querySelectorAll(".uploaded-image-menu-delete-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const imageId = Number(e.currentTarget.dataset.imageId);
       removeUploadedImage(imageId);
     });
   });
+}
+
+function renderImageMenu(image) {
+  const deletedItems = image.deletedPlayers.length
+    ? image.deletedPlayers
+        .map((player) => `<li>${getPlayerSummary(player)}</li>`)
+        .join("")
+    : "<li>삭제된 데이터 없음</li>";
+
+  return `
+    <div class="uploaded-image-menu">
+      <button class="uploaded-image-menu-delete-btn" data-image-id="${image.id}">삭제</button>
+      <div class="uploaded-image-menu-section">
+        <strong>삭제된 데이터</strong>
+        <ul>${deletedItems}</ul>
+      </div>
+    </div>
+  `;
 }
 
 async function uploadImageFile(file) {

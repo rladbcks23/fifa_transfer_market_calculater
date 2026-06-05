@@ -444,7 +444,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.uploaded-image-delete-btn {
+.uploaded-image-menu-btn {
   width: 26px;
   height: 26px;
   flex: 0 0 auto;
@@ -457,9 +457,57 @@ body {
   font-weight: 800;
   line-height: 1;
 }
-.uploaded-image-delete-btn:hover {
+.uploaded-image-menu-btn:hover {
+  border-color: #12b862;
+  color: #12b862;
+}
+.uploaded-image-menu {
+  margin: 0 10px 10px;
+  padding: 10px;
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+  background: white;
+}
+.uploaded-image-menu-delete-btn {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #dce3ec;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+.uploaded-image-menu-delete-btn:hover {
   border-color: #ef4444;
   color: #ef4444;
+}
+.uploaded-image-menu-section {
+  margin-top: 10px;
+}
+.uploaded-image-menu-section strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #374151;
+  font-size: 12px;
+}
+.uploaded-image-menu-section ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 96px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.uploaded-image-menu-section li {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f8faf9;
+  color: #64748b;
+  font-size: 12px;
 }
 .loading-overlay {
   position: fixed;
