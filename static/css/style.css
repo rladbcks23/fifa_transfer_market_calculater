@@ -445,30 +445,30 @@ body {
   text-overflow: ellipsis;
 }
 .uploaded-image-menu-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   flex: 0 0 auto;
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #64748b;
+  color: #111;
   cursor: pointer;
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   padding: 0;
 }
 .uploaded-image-menu-btn span {
-  width: 12px;
-  height: 2px;
+  width: 18px;
+  height: 4px;
   border-radius: 999px;
   background: currentColor;
 }
 .uploaded-image-menu-btn:hover {
-  background: #f0fdf6;
-  color: #12b862;
+  background: #f3f4f6;
+  color: #111;
 }
 .uploaded-image-menu {
   margin: 0 10px 10px;
