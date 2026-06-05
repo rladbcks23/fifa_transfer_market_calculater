@@ -417,9 +417,7 @@ function renderUploadedImages() {
       <div class="uploaded-image-meta">
         <span>${image.name}</span>
         <button class="uploaded-image-menu-btn" data-image-id="${image.id}" aria-label="Image actions">
-          <span></span>
-          <span></span>
-          <span></span>
+          <img src="/static/img/hamburger-menu.svg" alt="">
         </button>
       </div>
       ${openImageMenuId === image.id ? renderImageMenu(image) : ""}

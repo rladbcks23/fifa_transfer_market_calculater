@@ -460,11 +460,11 @@ body {
   gap: 4px;
   padding: 0;
 }
-.uploaded-image-menu-btn span {
-  width: 18px;
-  height: 4px;
-  border-radius: 999px;
-  background: currentColor;
+.uploaded-image-menu-btn img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 .uploaded-image-menu-btn:hover {
   background: #f3f4f6;
