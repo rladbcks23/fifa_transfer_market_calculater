@@ -429,14 +429,37 @@ body {
   object-fit: contain;
   background: white;
 }
-.uploaded-image-card span {
-  display: block;
+.uploaded-image-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 10px;
+}
+.uploaded-image-card span {
+  min-width: 0;
+  flex: 1;
   color: #6b7280;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.uploaded-image-delete-btn {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border: 1px solid #dce3ec;
+  border-radius: 8px;
+  background: white;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+.uploaded-image-delete-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
 }
 .loading-overlay {
   position: fixed;

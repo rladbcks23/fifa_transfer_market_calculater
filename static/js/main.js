@@ -1,5 +1,7 @@
 let players = [];
 let coupons = [];
+let uploadedImages = [];
+let nextImageId = 1;
 
 const BASE_FEE_RATE = 0.4;
 
@@ -353,17 +355,58 @@ topClassToggle?.addEventListener("change", renderPlayers);
 
 // ---------------- 이미지 ----------------
 function addImageToPanel(file) {
-  const url = URL.createObjectURL(file);
+  const image = {
+    id: nextImageId,
+    name: file.name,
+    url: URL.createObjectURL(file),
+  };
 
-  const card = document.createElement("div");
-  card.className = "uploaded-image-card";
+  nextImageId += 1;
+  uploadedImages.push(image);
+  renderUploadedImages();
 
-  card.innerHTML = `
-    <img src="${url}">
-    <span>${file.name}</span>
-  `;
+  return image;
+}
 
-  uploadedImageList.appendChild(card);
+function removeUploadedImage(imageId) {
+  const image = uploadedImages.find((item) => item.id === imageId);
+
+  if (image) {
+    URL.revokeObjectURL(image.url);
+  }
+
+  uploadedImages = uploadedImages.filter((item) => item.id !== imageId);
+  players = players.filter((player) => player.sourceImageId !== imageId);
+
+  renderUploadedImages();
+  renderPlayers();
+}
+
+function renderUploadedImages() {
+  uploadedImageList.innerHTML = "";
+
+  uploadedImages.forEach((image) => {
+    const card = document.createElement("div");
+    card.className = "uploaded-image-card";
+    card.dataset.imageId = image.id;
+
+    card.innerHTML = `
+      <img src="${image.url}">
+      <div class="uploaded-image-meta">
+        <span>${image.name}</span>
+        <button class="uploaded-image-delete-btn" data-image-id="${image.id}" aria-label="Remove image">&times;</button>
+      </div>
+    `;
+
+    uploadedImageList.appendChild(card);
+  });
+
+  document.querySelectorAll(".uploaded-image-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const imageId = Number(e.currentTarget.dataset.imageId);
+      removeUploadedImage(imageId);
+    });
+  });
 }
 
 async function uploadImageFile(file) {
@@ -373,7 +416,7 @@ async function uploadImageFile(file) {
     return;
   }
 
-  addImageToPanel(file);
+  const uploadedImage = addImageToPanel(file);
 
   const formData = new FormData();
   formData.append("image", file);
@@ -399,6 +442,7 @@ async function uploadImageFile(file) {
     const newPlayers = data.players.map((p) => ({
       price: formatPriceInput(p.price || ""),
       quantity: getPlayerQuantity(p.quantity),
+      sourceImageId: uploadedImage.id,
     }));
 
     players.push(...newPlayers);
