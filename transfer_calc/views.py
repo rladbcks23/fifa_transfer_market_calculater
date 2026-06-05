@@ -36,6 +36,39 @@ def clean_price(text):
     return price
 
 
+def clean_quantity(text):
+    clean = re.sub(r"[\s,]", "", text).lower()
+    clean = clean.replace("×", "x")
+    match = re.fullmatch(r"x?(\d{1,3})(?:개|장)?", clean)
+
+    if not match:
+        return None
+
+    quantity = int(match.group(1))
+
+    if quantity < 1:
+        return None
+
+    return quantity
+
+
+def get_bbox_metrics(bbox):
+    if not bbox:
+        return None
+
+    try:
+        xs = [float(point[0]) for point in bbox]
+        ys = [float(point[1]) for point in bbox]
+    except (TypeError, ValueError, IndexError):
+        return None
+
+    return {
+        "x": (min(xs) + max(xs)) / 2,
+        "y": (min(ys) + max(ys)) / 2,
+        "height": max(ys) - min(ys),
+    }
+
+
 def extract_player_from_group(group):
     price_idx = -1
 
@@ -52,10 +85,64 @@ def extract_player_from_group(group):
     if price is None:
         return None
 
-    return {"price": price}
+    quantity = 1
+
+    for text in group[price_idx + 1 :]:
+        parsed_quantity = clean_quantity(text)
+
+        if parsed_quantity is not None:
+            quantity = parsed_quantity
+            break
+
+    return {"price": price, "quantity": quantity}
+
+
+def extract_players_from_positioned_results(items):
+    price_items = [item for item in items if is_price(item["text"]) and item["prob"] > 0.2]
+    players = []
+
+    for price_item in price_items:
+        price = clean_price(price_item["text"])
+
+        if price is None:
+            continue
+
+        row_tolerance = max(18, price_item["height"] * 1.4)
+        same_row_items = [
+            item
+            for item in items
+            if abs(item["y"] - price_item["y"]) <= row_tolerance
+        ]
+        end_items = [
+            item
+            for item in same_row_items
+            if item["text"] == END_WORD and item["x"] > price_item["x"]
+        ]
+        end_x = min((item["x"] for item in end_items), default=None)
+        quantity_candidates = []
+
+        for item in same_row_items:
+            if item["x"] <= price_item["x"]:
+                continue
+
+            if end_x is not None and item["x"] >= end_x:
+                continue
+
+            quantity = clean_quantity(item["text"])
+
+            if quantity is None:
+                continue
+
+            quantity_candidates.append((item["x"] - price_item["x"], quantity))
+
+        quantity = min(quantity_candidates, default=(None, 1))[1]
+        players.append({"price": price, "quantity": quantity})
+
+    return players
 
 
 def parse_ocr_results(results):
+    positioned_items = []
     texts = []
 
     for result in results:
@@ -68,6 +155,11 @@ def parse_ocr_results(results):
         if text in IGNORE_WORDS:
             continue
 
+        metrics = get_bbox_metrics(result.get("bbox"))
+
+        if metrics:
+            positioned_items.append({"text": text, "prob": prob, **metrics})
+
         if text == END_WORD:
             texts.append(text)
             continue
@@ -75,6 +167,16 @@ def parse_ocr_results(results):
         if is_price(text) and prob > 0.2:
             texts.append(text)
             continue
+
+        if clean_quantity(text) is not None and prob > 0.2:
+            texts.append(text)
+            continue
+
+    if positioned_items:
+        players = extract_players_from_positioned_results(positioned_items)
+
+        if players:
+            return players
 
     groups = []
     current = []

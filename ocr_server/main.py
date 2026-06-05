@@ -72,8 +72,9 @@ def ocr(image: UploadFile = File(...), x_ocr_api_key: str | None = Header(defaul
             {
                 "text": text.strip(),
                 "prob": float(prob),
+                "bbox": [[float(x), float(y)] for x, y in bbox],
             }
-            for _bbox, text, prob in results
+            for bbox, text, prob in results
             if text.strip()
         ]
     }

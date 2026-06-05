@@ -219,7 +219,7 @@ body {
 .table-header,
 .player-row {
   display: grid;
-  grid-template-columns: 1.2fr 2fr 1.2fr 0.7fr;
+  grid-template-columns: 1.15fr 0.55fr 1.7fr 1.15fr 0.65fr;
 }
 .table-header {
   padding: 10px 30px;
@@ -253,12 +253,14 @@ body {
   font-weight: 800;
 }
 .price-input,
+.quantity-input,
 .count-input {
   width: 100%;
   border: 1px solid #dce3ec;
   border-radius: 10px;
 }
-.price-input {
+.price-input,
+.quantity-input {
   padding: 9px 11px;
   font-size: 14px;
 }
@@ -267,7 +269,8 @@ body {
   padding: 0 10px;
   font-size: 13px;
 }
-.price-input:focus {
+.price-input:focus,
+.quantity-input:focus {
   border-color: #12b862;
   box-shadow: 0 0 0 3px rgba(18, 184, 98, 0.12);
 }

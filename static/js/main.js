@@ -21,6 +21,11 @@ const topClassToggle = document.getElementById("topClassToggle");
 
 const couponList = document.getElementById("couponList");
 
+function getPlayerQuantity(quantity) {
+  const parsed = Number(quantity);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
+}
+
 // ---------------- 가격 처리 ----------------
 function parseBp(value) {
   if (!value) return 0;
@@ -67,18 +72,25 @@ function formatPriceInput(value) {
 function getAssignedCouponMap() {
   const couponMap = new Map();
 
-  const sortedPlayers = players
-    .map((p, index) => ({
+  const playerCards = players.flatMap((p, index) => {
+    const quantity = getPlayerQuantity(p.quantity);
+    const price = parseBp(p.price);
+
+    return Array.from({ length: quantity }, () => ({
       index,
-      price: parseBp(p.price),
-    }))
-    .sort((a, b) => b.price - a.price);
+      price,
+    }));
+  });
+
+  const sortedPlayers = playerCards.sort((a, b) => b.price - a.price);
 
   const sortedCoupons = [...coupons].sort((a, b) => b.rate - a.rate);
 
   sortedPlayers.forEach((p, i) => {
     if (sortedCoupons[i]) {
-      couponMap.set(p.index, sortedCoupons[i]);
+      const assignedCoupons = couponMap.get(p.index) || [];
+      assignedCoupons.push(sortedCoupons[i]);
+      couponMap.set(p.index, assignedCoupons);
     }
   });
 
@@ -122,18 +134,39 @@ function getCouponDiscountAmount(price, coupon = null) {
 }
 
 // ---------------- 라벨 ----------------
-function getAppliedDiscountLabel(price, coupon = null) {
+function getAppliedDiscountLabel(price, couponList = []) {
   const labels = [];
 
   if (pcRoomToggle?.checked) labels.push("PC방");
   if (topClassToggle?.checked) labels.push("TOP");
 
-  if (coupon) {
-    const couponDiscount = getCouponDiscountAmount(price, coupon);
-    labels.push(`수쿠 ${coupon.rate}% (${formatBp(couponDiscount)})`);
+  if (couponList.length) {
+    const couponGroups = new Map();
+
+    couponList.forEach((coupon) => {
+      const current = couponGroups.get(coupon.rate) || { count: 0, amount: 0 };
+      current.count += 1;
+      current.amount += getCouponDiscountAmount(price, coupon);
+      couponGroups.set(coupon.rate, current);
+    });
+
+    couponGroups.forEach((group, rate) => {
+      const countLabel = group.count > 1 ? ` x${group.count}` : "";
+      labels.push(`수쿠 ${rate}%${countLabel} (${formatBp(group.amount)})`);
+    });
   }
 
   return labels.length ? labels.join(" + ") : "-";
+}
+
+function getPlayerFinalTotal(price, quantity, couponList = []) {
+  let total = 0;
+
+  for (let i = 0; i < quantity; i++) {
+    total += getFinalPrice(price, couponList[i] || null);
+  }
+
+  return total;
 }
 
 // ---------------- 렌더 ----------------
@@ -146,8 +179,9 @@ function renderPlayers() {
   players.forEach((player, index) => {
     const displayPrice = formatPriceInput(player.price);
     const price = parseBp(displayPrice);
-    const coupon = couponMap.get(index) || null;
-    const afterPrice = getFinalPrice(price, coupon);
+    const quantity = getPlayerQuantity(player.quantity);
+    const assignedCoupons = couponMap.get(index) || [];
+    const afterPrice = getPlayerFinalTotal(price, quantity, assignedCoupons);
 
     const row = document.createElement("div");
     row.className = "player-row";
@@ -155,7 +189,8 @@ function renderPlayers() {
 
     row.innerHTML = `
       <input class="price-input" value="${displayPrice}" data-index="${index}" inputmode="numeric">
-      <div class="discount-rate">${getAppliedDiscountLabel(price, coupon)}</div>
+      <input class="quantity-input" value="${quantity}" data-index="${index}" type="number" min="1" step="1" inputmode="numeric">
+      <div class="discount-rate">${getAppliedDiscountLabel(price, assignedCoupons)}</div>
       <div class="discount-price">${formatBp(afterPrice)}</div>
       <button class="delete-btn" data-index="${index}">삭제</button>
     `;
@@ -177,10 +212,11 @@ function updatePlayerRows() {
     if (!player) return;
 
     const price = parseBp(player.price);
-    const coupon = couponMap.get(index) || null;
-    const afterPrice = getFinalPrice(price, coupon);
+    const quantity = getPlayerQuantity(player.quantity);
+    const assignedCoupons = couponMap.get(index) || [];
+    const afterPrice = getPlayerFinalTotal(price, quantity, assignedCoupons);
 
-    row.querySelector(".discount-rate").textContent = getAppliedDiscountLabel(price, coupon);
+    row.querySelector(".discount-rate").textContent = getAppliedDiscountLabel(price, assignedCoupons);
     row.querySelector(".discount-price").textContent = formatBp(afterPrice);
   });
 }
@@ -197,6 +233,26 @@ function bindEvents() {
       const rawPrice = getPriceInputNumber(e.target.value);
       players[e.target.dataset.index].price = rawPrice;
       e.target.value = rawPrice;
+      updatePlayerRows();
+      calculateResult();
+    });
+
+    input.addEventListener("blur", () => {
+      renderPlayers();
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.target.blur();
+      }
+    });
+  });
+
+  document.querySelectorAll(".quantity-input").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const quantity = getPlayerQuantity(e.target.value);
+      players[e.target.dataset.index].quantity = quantity;
+      e.target.value = quantity;
       updatePlayerRows();
       calculateResult();
     });
@@ -229,10 +285,11 @@ function calculateResult() {
 
   players.forEach((p, index) => {
     const price = parseBp(p.price);
-    const coupon = couponMap.get(index) || null;
-    const final = getFinalPrice(price, coupon);
+    const quantity = getPlayerQuantity(p.quantity);
+    const assignedCoupons = couponMap.get(index) || [];
+    const final = getPlayerFinalTotal(price, quantity, assignedCoupons);
 
-    totalBefore += price;
+    totalBefore += price * quantity;
     totalAfter += final;
   });
 
@@ -249,7 +306,7 @@ function calculateResult() {
 
 // ---------------- 선수 추가 ----------------
 document.getElementById("addPlayerBtn").addEventListener("click", () => {
-  players.push({ price: "" });
+  players.push({ price: "", quantity: 1 });
   renderPlayers();
 });
 
@@ -341,6 +398,7 @@ async function uploadImageFile(file) {
 
     const newPlayers = data.players.map((p) => ({
       price: formatPriceInput(p.price || ""),
+      quantity: getPlayerQuantity(p.quantity),
     }));
 
     players.push(...newPlayers);
