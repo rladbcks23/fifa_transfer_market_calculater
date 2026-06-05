@@ -191,9 +191,9 @@ function renderPlayers() {
 
     row.innerHTML = `
       <input class="price-input" value="${displayPrice}" data-index="${index}" inputmode="numeric">
-      <input class="quantity-input" value="${quantity}" data-index="${index}" type="number" min="1" step="1" inputmode="numeric">
       <div class="discount-rate">${getAppliedDiscountLabel(price, assignedCoupons)}</div>
       <div class="discount-price">${formatBp(afterPrice)}</div>
+      <input class="quantity-input" value="${quantity}" data-index="${index}" type="number" min="1" step="1" inputmode="numeric">
       <button class="delete-btn" data-index="${index}">삭제</button>
     `;
 
