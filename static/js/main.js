@@ -416,7 +416,11 @@ function renderUploadedImages() {
       <img src="${image.url}">
       <div class="uploaded-image-meta">
         <span>${image.name}</span>
-        <button class="uploaded-image-menu-btn" data-image-id="${image.id}" aria-label="Image actions">...</button>
+        <button class="uploaded-image-menu-btn" data-image-id="${image.id}" aria-label="Image actions">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
       ${openImageMenuId === image.id ? renderImageMenu(image) : ""}
     `;
@@ -450,10 +454,10 @@ function renderImageMenu(image) {
   return `
     <div class="uploaded-image-menu">
       <button class="uploaded-image-menu-delete-btn" data-image-id="${image.id}">삭제</button>
-      <div class="uploaded-image-menu-section">
-        <strong>삭제된 데이터</strong>
+      <details class="uploaded-image-menu-section">
+        <summary>삭제된 데이터</summary>
         <ul>${deletedItems}</ul>
-      </div>
+      </details>
     </div>
   `;
 }

@@ -453,9 +453,18 @@ body {
   background: white;
   color: #64748b;
   cursor: pointer;
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+}
+.uploaded-image-menu-btn span {
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
 }
 .uploaded-image-menu-btn:hover {
   border-color: #12b862;
@@ -486,11 +495,15 @@ body {
 .uploaded-image-menu-section {
   margin-top: 10px;
 }
-.uploaded-image-menu-section strong {
-  display: block;
-  margin-bottom: 6px;
+.uploaded-image-menu-section summary {
+  cursor: pointer;
   color: #374151;
   font-size: 12px;
+  font-weight: 800;
+  list-style-position: inside;
+}
+.uploaded-image-menu-section[open] summary {
+  margin-bottom: 6px;
 }
 .uploaded-image-menu-section ul {
   display: flex;
